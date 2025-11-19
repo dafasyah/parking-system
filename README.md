@@ -461,6 +461,41 @@ npm run build
    QrCode::size(200)->generate('TEST');
    ```
 
+### QR Scanner tidak muncul / Camera permission denied di Chrome
+**Penyebab:** Chrome memblokir akses kamera di localhost (HTTP) karena alasan keamanan
+
+**Solusi untuk Development (Localhost):**
+
+1. **Buka Chrome Flags:**
+   ```
+   chrome://flags/#unsafely-treat-insecure-origin-as-secure
+   ```
+
+2. **Enable Insecure Origins:**
+   - Di kolom "Insecure origins treated as secure", masukkan:
+     ```
+     http://localhost:8000,http://parking-system.test,http://127.0.0.1:8000
+     ```
+   - Atau sesuaikan dengan URL local Anda
+
+3. **Set dropdown** menjadi **"Enabled"**
+
+4. **Relaunch Chrome** (akan muncul tombol "Relaunch" di kanan bawah)
+
+5. **Refresh halaman** dan klik tombol scan QR, Chrome akan request camera permission
+
+**Alternatif Solusi:**
+- Gunakan **HTTPS** di local (Laravel Valet, Laragon SSL)
+- Test di **Firefox** atau **Edge** (lebih permisif untuk localhost)
+- Deploy ke **production** dengan HTTPS (otomatis work)
+
+**Referensi:**
+- [Stack Overflow: Chrome Camera Access on Localhost](https://stackoverflow.com/questions/16835421/how-to-allow-chrome-to-access-my-camera-on-localhost)
+- [Chrome Developers: getUserMedia on Insecure Origins](https://sites.google.com/a/chromium.org/dev/Home/chromium-security/deprecating-powerful-features-on-insecure-origins)
+
+**Note untuk Production:**
+Pastikan menggunakan **HTTPS** agar QR scanner berfungsi tanpa perlu konfigurasi tambahan.
+
 ### Composer install error: "ext-gd required"
 ```bash
 # Aktifkan gd di php.ini terlebih dahulu
