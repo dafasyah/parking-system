@@ -2,10 +2,13 @@
 nixPkgs = ['php82', 'php82Extensions.gd', 'php82Extensions.zip', 'php82Extensions.pdo', 'php82Extensions.mbstring', 'php82Extensions.intl', 'php82Packages.composer', 'nodejs']
 
 [phases.install]
-cmds = ['composer install --optimize-autoloader --no-dev --no-scripts --ignore-platform-reqs']
+cmds = [
+  'composer install --optimize-autoloader --no-dev --no-scripts --ignore-platform-reqs',
+  'chmod -R 775 storage bootstrap/cache'
+]
 
 [phases.build]
 cmds = ['npm ci --include=dev', 'npm run build']
 
 [start]
-cmd = 'php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'php artisan storage:link && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan serve --host=0.0.0.0 --port=$PORT'
