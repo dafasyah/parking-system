@@ -128,6 +128,47 @@ Sistem manajemen parkir berbasis web dengan fitur entry/exit kendaraan, perhitun
 - Composer `2.6+` (sudah include di Laragon)
 - Node.js `20.x+` (install manual jika belum ada)
 
+#### ⚠️ PHP Extensions yang Diperlukan
+Pastikan extension PHP berikut sudah **diaktifkan** di Laragon:
+
+**WAJIB (Required):**
+- ✅ `gd` - Untuk QR Code generation & image processing
+- ✅ `zip` - Untuk Excel export & file compression
+- ✅ `pdo_mysql` - Database connection
+- ✅ `mbstring` - String handling
+- ✅ `openssl` - Encryption & security
+- ✅ `intl` - Internationalization
+
+**Cara Mengaktifkan Extension di Laragon:**
+1. Klik kanan **Laragon** → **PHP** → **php.ini**
+2. Cari baris extension yang masih dicomment (`;extension=...`)
+3. Hapus tanda `;` (semicolon) di depan extension:
+   ```ini
+   extension=gd
+   extension=zip
+   extension=pdo_mysql
+   extension=mbstring
+   extension=openssl
+   extension=intl
+   ```
+4. **Save** file `php.ini`
+5. **Restart Laragon** (Stop → Start)
+
+**Verifikasi Extension:**
+```bash
+# Cek extension yang aktif
+php -m | findstr "gd zip"
+
+# Atau buat file info.php di public/
+<?php phpinfo(); ?>
+# Akses: http://localhost/parking-system/public/info.php
+```
+
+**Jika extension `gd` atau `zip` tidak tersedia:**
+- Download PHP versi yang sama dari [windows.php.net](https://windows.php.net/download/)
+- Extract dan copy file `php_gd.dll` + `php_zip.dll` ke folder `C:\laragon\bin\php\php-8.x\ext\`
+- Aktifkan di `php.ini` seperti langkah di atas
+
 ### Langkah Instalasi
 
 #### 1. Extract Project
@@ -347,6 +388,44 @@ php artisan key:generate
 ### Error: "SQLSTATE[HY000] [1049] Unknown database"
 Buat database `parking_system` di HeidiSQL/MySQL
 
+### Error: "Class 'Imagick' not found" atau "GD extension not loaded"
+**Penyebab:** Extension `gd` belum aktif di PHP
+
+**Solusi:**
+1. Buka `php.ini` (Laragon → Klik Kanan → PHP → php.ini)
+2. Cari dan hapus `;` di depan:
+   ```ini
+   ;extension=gd
+   ```
+   Menjadi:
+   ```ini
+   extension=gd
+   ```
+3. Restart Laragon
+4. Verifikasi: `php -m | findstr gd`
+
+### Error: "ZipArchive class not found" atau Excel export gagal
+**Penyebab:** Extension `zip` belum aktif
+
+**Solusi:**
+1. Buka `php.ini`
+2. Aktifkan extension:
+   ```ini
+   extension=zip
+   ```
+3. Restart Laragon
+4. Verifikasi: `php -m | findstr zip`
+
+### Error: "Call to undefined function imagecreatefromstring()"
+**Penyebab:** Extension `gd` tidak ter-install atau tidak aktif
+
+**Solusi:**
+1. Cek apakah file `php_gd.dll` ada di `C:\laragon\bin\php\php-8.x\ext\`
+2. Jika tidak ada, download PHP versi yang sama dari [windows.php.net](https://windows.php.net/download/)
+3. Extract dan copy `php_gd.dll` ke folder `ext\`
+4. Aktifkan di `php.ini`: `extension=gd`
+5. Restart Laragon
+
 ### Error: Permission denied (storage/logs)
 ```bash
 chmod -R 775 storage bootstrap/cache
@@ -367,6 +446,35 @@ php artisan config:clear
 
 # Rebuild assets
 npm run build
+```
+
+### QR Code tidak muncul di PDF
+**Penyebab:** Extension `gd` tidak aktif atau package `simplesoftwareio/simple-qrcode` error
+
+**Solusi:**
+1. Pastikan `gd` extension aktif: `php -m | findstr gd`
+2. Clear cache: `php artisan cache:clear`
+3. Regenerate QR: Hapus cache di `storage/framework/cache/`
+4. Test QR generation:
+   ```php
+   use SimpleSoftwareIO\QrCode\Facades\QrCode;
+   QrCode::size(200)->generate('TEST');
+   ```
+
+### Composer install error: "ext-gd required"
+```bash
+# Aktifkan gd di php.ini terlebih dahulu
+# Lalu jalankan:
+composer install --ignore-platform-reqs
+
+# Atau update composer.json:
+{
+    "config": {
+        "platform": {
+            "ext-gd": "8.2"
+        }
+    }
+}
 ```
 
 ---
