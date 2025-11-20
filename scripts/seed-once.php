@@ -1,6 +1,11 @@
 #!/usr/bin/env php
 <?php
 
+// Bootstrap Laravel
+require __DIR__ . '/../vendor/autoload.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
 // Check if seeder has already run
 $seedMarkerFile = storage_path('framework/seeder.lock');
 
