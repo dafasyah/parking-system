@@ -13,6 +13,22 @@ use App\Http\Controllers\Settings\ParkingRateController;
 
 Route::get('/', function () { return redirect()->route('login'); });
 
+// Serve QR Code files (for Railway where storage:link doesn't work)
+Route::get('/storage/qrcodes/{filename}', function ($filename) {
+    $path = storage_path('app/public/qrcodes/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    
+    $mimeType = str_ends_with($filename, '.svg') ? 'image/svg+xml' : 'image/png';
+    
+    return response()->file($path, [
+        'Content-Type' => $mimeType,
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->name('qrcode.serve');
+
 // Authentication
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
