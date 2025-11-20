@@ -52,7 +52,7 @@
             {{-- QR Code Section --}}
             <div class="flex-1 flex flex-col items-center justify-center">
                 <div class="border-2 border-dashed border-gray-300 rounded-2xl p-6 bg-gray-50">
-                    <img src="{{ Storage::url($transaction->qr_code_path) }}" 
+                    <img src="{{ url('storage/' . $transaction->qr_code_path) }}" 
                          alt="QR Code Parkir" 
                          class="w-[300px] h-[300px] object-contain" />
                 </div>
