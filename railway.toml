@@ -2,13 +2,13 @@
 builder = "nixpacks"
 
 [build.nixpacksPlan.phases.setup]
-nixPkgs = ["php82", "php82Extensions.gd", "php82Extensions.zip", "php82Extensions.pdo", "php82Extensions.mbstring", "php82Packages.composer", "nodejs"]
+nixPkgs = ["php82", "php82Extensions.gd", "php82Extensions.zip", "php82Extensions.pdo", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.intl", "php82Extensions.imagick", "imagemagick", "php82Packages.composer", "nodejs"]
 
 [build.nixpacksPlan.phases.install]
 cmds = ["composer install --optimize-autoloader --no-dev --no-scripts --ignore-platform-reqs"]
 
 [build.nixpacksPlan.phases.build]
-cmds = ["npm install", "npm run build"]
+cmds = ["npm ci --include=dev", "npm run build", "chmod -R 775 storage bootstrap/cache"]
 
 [build.nixpacksPlan.start]
-cmd = "php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force && php scripts/seed-once.php && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "rm -rf bootstrap/cache/*.php && php artisan config:clear && php artisan cache:clear && php artisan storage:link || true && sleep 3 && php artisan migrate --force && php scripts/seed-once.php && php artisan serve --host=0.0.0.0 --port=$PORT"
