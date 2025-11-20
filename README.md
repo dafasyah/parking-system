@@ -16,7 +16,7 @@ Sistem manajemen parkir berbasis web dengan fitur entry/exit kendaraan, perhitun
 ### Backend Packages (Composer)
 ```json
 "laravel/framework": "^11.0"
-"spatie/laravel-permission": "^6.0"          // Role & Permission Management
+"spatie/laravel-permission": "^6.0"         // Role & Permission Management
 "spatie/laravel-activitylog": "^4.8"        // Audit Trail
 "pragmarx/google2fa": "^8.0"                // Two-Factor Authentication
 "maatwebsite/excel": "^3.1"                 // Excel Export
