@@ -97,7 +97,11 @@
 
     <div class="qr-section">
         @if($transaction->qr_code_path && file_exists(storage_path('app/public/' . $transaction->qr_code_path)))
-            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $transaction->qr_code_path))) }}" alt="QR Code">
+            @if(str_ends_with($transaction->qr_code_path, '.svg'))
+                {!! file_get_contents(storage_path('app/public/' . $transaction->qr_code_path)) !!}
+            @else
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(storage_path('app/public/' . $transaction->qr_code_path))) }}" alt="QR Code">
+            @endif
         @endif
     </div>
 

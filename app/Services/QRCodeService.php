@@ -8,18 +8,17 @@ class QRCodeService
 {
     public function generateAndStore(string $code): string
     {
-
-        $png = QrCode::format('png')
+        $svg = QrCode::format('svg')
             ->size(300)
             ->margin(1)
             ->errorCorrection('H')
             ->generate($code);
         
         // Save to public disk (storage/app/public/qrcodes/)
-        $filename = $code . '.png';
+        $filename = $code . '.svg';
         $path = 'qrcodes/' . $filename;
         
-        Storage::disk('public')->put($path, $png);
+        Storage::disk('public')->put($path, $svg);
         
         return $path;
     }
